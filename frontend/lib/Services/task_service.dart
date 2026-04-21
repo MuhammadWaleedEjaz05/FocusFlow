@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 typedef TokenRefreshCallback = Future<String> Function();
 
 class TaskService {
-  final String baseURL = 'https://focusflow-h3i5.onrender.com/MyTasks/tasks';
+  final String baseURL =
+      'https://focusflow-production-874d.up.railway.app/MyTasks/tasks';
 
   TokenRefreshCallback? onTokenExpired;
 
@@ -174,7 +175,10 @@ class TaskService {
   }
 
   Future<void> addToGoogleCalendar(
-      TaskModel task, String token, String googleAccessToken) async {
+    TaskModel task,
+    String token,
+    String googleAccessToken,
+  ) async {
     final url = Uri.parse('$baseURL/add-to-google-calendar');
     final response = await http.post(
       url,

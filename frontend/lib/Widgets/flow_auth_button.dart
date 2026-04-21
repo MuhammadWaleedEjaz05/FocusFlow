@@ -13,8 +13,7 @@ class FlowAuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
+    return Expanded(
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
