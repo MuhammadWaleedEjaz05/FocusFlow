@@ -70,46 +70,52 @@ class FlowChangePasswordModal extends ConsumerWidget {
               isPassword: true,
             ),
             20.verticalSpace,
-            FlowAuthButton(
-              onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  if (newPasswordController.text !=
-                      confirmPasswordController.text) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('New passwords do not match'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                    return;
-                  }
+            Row(
+              children: [
+                FlowAuthButton(
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      if (newPasswordController.text !=
+                          confirmPasswordController.text) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('New passwords do not match'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
 
-                  try {
-                    await ref
-                        .read(userServiceProvider)
-                        .loginUser(userEmail, oldPasswordController.text);
-                    userController.maybeWhen(
-                      data: (user) async {
-                        await ref.read(userProvider.future).then((value) {
-                          value.updateUser(
-                            user.copyWith(password: newPasswordController.text),
-                          );
-                        });
-                        if (context.mounted) Navigator.pop(context);
-                      },
-                      orElse: () {},
-                    );
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Old password is incorrect'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                }
-              },
-              text: AppLocalizations.of(context)!.save,
+                      try {
+                        await ref
+                            .read(userServiceProvider)
+                            .loginUser(userEmail, oldPasswordController.text);
+                        userController.maybeWhen(
+                          data: (user) async {
+                            await ref.read(userProvider.future).then((value) {
+                              value.updateUser(
+                                user.copyWith(
+                                  password: newPasswordController.text,
+                                ),
+                              );
+                            });
+                            if (context.mounted) Navigator.pop(context);
+                          },
+                          orElse: () {},
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Old password is incorrect'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  text: AppLocalizations.of(context)!.save,
+                ),
+              ],
             ),
             20.verticalSpace,
           ],

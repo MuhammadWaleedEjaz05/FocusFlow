@@ -38,25 +38,29 @@ class FlowConfirmDeleteModal extends ConsumerWidget {
               ),
             ),
             20.verticalSpace,
-            FlowAuthButton(
-              onPressed: () async {
-                try {
-                  final prefs = await ref.read(prefProvider.future);
-                  final email = prefs.getString('userEmail');
-                  if (email != null) {
-                    final controller = await ref.read(userProvider.future);
-                    controller.deleteUser(email);
-                  }
-                  prefs.setBool('isLoggedIn', false);
-                  ref.read(isLoggedInProvider.notifier).state = false;
-                  Navigator.pop(context);
-                } catch (e) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(e.toString())));
-                }
-              },
-              text: AppLocalizations.of(context)!.delete,
+            Row(
+              children: [
+                FlowAuthButton(
+                  onPressed: () async {
+                    try {
+                      final prefs = await ref.read(prefProvider.future);
+                      final email = prefs.getString('userEmail');
+                      if (email != null) {
+                        final controller = await ref.read(userProvider.future);
+                        controller.deleteUser(email);
+                      }
+                      prefs.setBool('isLoggedIn', false);
+                      ref.read(isLoggedInProvider.notifier).state = false;
+                      Navigator.pop(context);
+                    } catch (e) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(e.toString())));
+                    }
+                  },
+                  text: AppLocalizations.of(context)!.delete,
+                ),
+              ],
             ),
           ],
         ),

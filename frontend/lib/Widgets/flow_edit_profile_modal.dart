@@ -53,22 +53,28 @@ class FlowEditProfileModal extends ConsumerWidget {
             controller: nameController,
           ),
           20.verticalSpace,
-          FlowAuthButton(
-            onPressed: () async {
-              final userController = ref.watch(fetchuserProvider(userEmail));
-              userController.maybeWhen(
-                data: (user) async {
-                  await ref.read(userProvider.future).then((value) {
-                    value.updateUser(
-                      user.copyWith(fullName: nameController.text),
-                    );
-                  });
+          Row(
+            children: [
+              FlowAuthButton(
+                onPressed: () async {
+                  final userController = ref.watch(
+                    fetchuserProvider(userEmail),
+                  );
+                  userController.maybeWhen(
+                    data: (user) async {
+                      await ref.read(userProvider.future).then((value) {
+                        value.updateUser(
+                          user.copyWith(fullName: nameController.text),
+                        );
+                      });
+                    },
+                    orElse: () {},
+                  );
+                  Navigator.pop(context);
                 },
-                orElse: () {},
-              );
-              Navigator.pop(context);
-            },
-            text: AppLocalizations.of(context)!.save,
+                text: AppLocalizations.of(context)!.save,
+              ),
+            ],
           ),
           20.verticalSpace,
         ],
