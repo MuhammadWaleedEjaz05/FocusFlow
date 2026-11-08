@@ -11,6 +11,13 @@ app.use(express.json());
 app.use(cors());
 const PORT = process.env.PORT;
 
+app.use('/health', (req, res) => {
+    res.status(200).json({
+        status: 'ok',
+        message: 'MyTasks API is running successfully'
+    });
+});
+
 connectDatabase();
 
 app.use('/MyTasks/tasks', require('./Routes/task_route'));
