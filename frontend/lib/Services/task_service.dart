@@ -6,7 +6,7 @@ typedef TokenRefreshCallback = Future<String> Function();
 
 class TaskService {
   final String baseURL =
-      'https://focusflow-production-874d.up.railway.app/MyTasks/tasks';
+      'https://flowfocus.duckdns.org/MyTasks/tasks';
 
   TokenRefreshCallback? onTokenExpired;
 
