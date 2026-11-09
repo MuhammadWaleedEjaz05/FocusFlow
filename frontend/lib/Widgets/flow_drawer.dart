@@ -6,23 +6,23 @@ import 'package:frontend/Providers/screen_navigation_provider.dart';
 import 'package:frontend/Providers/user_provider.dart';
 import 'package:frontend/Screens/login_screen.dart';
 import 'package:frontend/Screens/signup_screen.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:frontend/app/theme/app_text_styles.dart';
+import 'package:frontend/core/extensions/theme_extensions.dart';
+import 'package:frontend/core/routes/app_page_transitions.dart';
 import 'package:frontend/l10n/app_localizations.dart';
+import 'package:frontend/widgets/app_text.dart';
 
 class FlowDrawer extends ConsumerWidget {
   const FlowDrawer({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenSelection = ref.watch(screenNavigationProvider);
-    final isLoggedIn = ref
-        .watch(prefProvider)
-        .maybeWhen(
+    final isLoggedIn = ref.watch(prefProvider).maybeWhen(
           data: (prefs) => prefs.getBool('isLoggedIn') ?? false,
           orElse: () => false,
         );
-    final userEmail = ref
-        .watch(prefProvider)
-        .maybeWhen(
+    final userEmail = ref.watch(prefProvider).maybeWhen(
           data: (prefs) => prefs.getString('userEmail') ?? '',
           orElse: () => '',
         );
@@ -32,8 +32,9 @@ class FlowDrawer extends ConsumerWidget {
       orElse: () => null,
     );
     final isOnline = ref.watch(isOnlineProvider);
+
     return Drawer(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: context.appColors.surface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -41,104 +42,118 @@ class FlowDrawer extends ConsumerWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColorLight,
+                  context.appColors.primary,
+                  context.appColors.primary,
+                  context.appColors.primaryLight,
                 ],
-                begin: Alignment.centerLeft,
+                begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                stops: [0, 0.5, 1],
               ),
             ),
             child: isOnline
                 ? isLoggedIn
-                      ? Column(
-                          children: [
-                            Icon(
-                              Icons.person_outline,
-                              size: 80.r,
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 30.r,
+                            backgroundColor: Colors.white.withValues(alpha: 0.2),
+                            child: Icon(
+                              Icons.person_rounded,
+                              size: 36.r,
                               color: Colors.white,
                             ),
-                            if (userAsync.isLoading)
-                              const CircularProgressIndicator(
+                          ),
+                          10.verticalSpace,
+                          if (userAsync.isLoading)
+                            SizedBox(
+                              height: 16.r,
+                              width: 16.r,
+                              child: const CircularProgressIndicator(
                                 color: Colors.white,
-                              )
-                            else
-                              Flexible(
-                                child: Text(
-                                  userData?.fullName ?? 'Guest',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontSize: 30.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                strokeWidth: 2,
                               ),
-                          ],
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
+                            )
+                          else
+                            AppText(
+                              text: userData?.fullName ?? 'Guest',
+                              style: AppTextStyles.titleMedium(context).copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 140.w,
+                            height: 38.h,
+                            child: ElevatedButton(
                               onPressed: () {
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => LoginScreen(),
-                                  ),
+                                  AppPageRoute.fadeScale(const LoginScreen()),
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                fixedSize: Size(150.w, 50.h),
+                                backgroundColor: Colors.white,
+                                foregroundColor: context.appColors.primary,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.r),
                                 ),
-                                backgroundColor: Colors.white,
-                                foregroundColor: Theme.of(context).primaryColor,
-                                textStyle: GoogleFonts.inter(
+                              ),
+                              child: AppText(
+                                text: AppLocalizations.of(context)!.login,
+                                style: AppTextStyles.labelMedium(context).copyWith(
+                                  color: context.appColors.primary,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20.sp,
                                 ),
                               ),
-                              child: Text(AppLocalizations.of(context)!.login),
                             ),
-                            10.verticalSpace,
-                            ElevatedButton(
+                          ),
+                          8.verticalSpace,
+                          SizedBox(
+                            width: 140.w,
+                            height: 38.h,
+                            child: OutlinedButton(
                               onPressed: () {
                                 Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const SignupScreen(),
-                                  ),
+                                  AppPageRoute.fadeScale(const SignupScreen()),
                                 );
                               },
-                              style: ElevatedButton.styleFrom(
-                                fixedSize: Size(150.w, 50.h),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Colors.white),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.r),
                                 ),
-                                backgroundColor: Colors.white,
-                                foregroundColor: Theme.of(context).primaryColor,
-                                textStyle: GoogleFonts.inter(
+                              ),
+                              child: AppText(
+                                text: AppLocalizations.of(context)!.signUp,
+                                style: AppTextStyles.labelMedium(context).copyWith(
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20.sp,
                                 ),
                               ),
-                              child: Text(AppLocalizations.of(context)!.signUp),
                             ),
-                          ],
-                        )
+                          ),
+                        ],
+                      )
                 : Center(
-                    child: Text(
-                      'No Internet Connection',
-                      style: GoogleFonts.inter(
+                    child: AppText(
+                      text: 'Offline Mode',
+                      style: AppTextStyles.titleMedium(context).copyWith(
                         color: Colors.white,
-                        fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
           ),
           ListView.builder(
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
             shrinkWrap: true,
             itemCount: screens(context).length,
             itemBuilder: (context, index) => FlowDrawerItem(
@@ -149,43 +164,45 @@ class FlowDrawer extends ConsumerWidget {
                 ref.read(screenNavigationProvider.notifier).state = index;
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => screens(context)[index].screenWidget,
+                  AppPageRoute.fadeScale(
+                    screens(context)[index].screenWidget,
                   ),
                 );
               },
             ),
           ),
-          Spacer(),
-          Padding(
-            padding: EdgeInsets.all(10.r),
-            child: isLoggedIn
-                ? ListTile(
-                    tileColor: Colors.deepOrange,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    leading: Icon(
-                      Icons.logout,
-                      size: 30.r,
-                      color: Colors.white,
-                    ),
-                    title: Text(
-                      AppLocalizations.of(context)!.logout,
-                      style: GoogleFonts.inter(
-                        fontSize: 20.sp,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onTap: () async {
-                      final controller = await ref.read(userProvider.future);
-                      await controller.logoutUser();
-                      Navigator.of(context).pop();
-                    },
-                  )
-                : null,
-          ),
+          const Spacer(),
+          if (isLoggedIn)
+            Padding(
+              padding: EdgeInsets.all(16.r),
+              child: ListTile(
+                tileColor: context.appColors.error.withValues(alpha: 0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                  side: BorderSide(
+                    color: context.appColors.error.withValues(alpha: 0.3),
+                  ),
+                ),
+                leading: Icon(
+                  Icons.logout_rounded,
+                  size: 22.r,
+                  color: context.appColors.error,
+                ),
+                title: AppText(
+                  text: AppLocalizations.of(context)!.logout,
+                  style: AppTextStyles.labelLarge(context).copyWith(
+                    color: context.appColors.error,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onTap: () async {
+                  final controller = await ref.read(userProvider.future);
+                  await controller.logoutUser();
+                  if (!context.mounted) return;
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
         ],
       ),
     );
@@ -197,6 +214,7 @@ class FlowDrawerItem extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
   final bool isSelected;
+
   const FlowDrawerItem({
     super.key,
     required this.title,
@@ -208,29 +226,34 @@ class FlowDrawerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(10.r),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: ListTile(
         tileColor: isSelected
-            ? Theme.of(context).primaryColor
-            : Theme.of(context).scaffoldBackgroundColor,
+            ? context.appColors.primary.withValues(alpha: 0.12)
+            : Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          side: BorderSide(
-            color: Theme.of(context).primaryColor.withAlpha(75),
-            width: 2,
-          ),
+          borderRadius: BorderRadius.circular(12.r),
+          side: isSelected
+              ? BorderSide(
+                  color: context.appColors.primary.withValues(alpha: 0.4),
+                  width: 1.r,
+                )
+              : BorderSide.none,
         ),
         leading: Icon(
           icon,
-          size: 30.r,
-          color: isSelected ? Colors.white : Theme.of(context).primaryColor,
+          size: 22.r,
+          color: isSelected
+              ? context.appColors.primary
+              : context.appColors.onSurfaceVariant,
         ),
-        title: Text(
-          title,
-          style: GoogleFonts.inter(
-            fontSize: 20.sp,
-            color: isSelected ? Colors.white : Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
+        title: AppText(
+          text: title,
+          style: AppTextStyles.bodyMedium(context).copyWith(
+            color: isSelected
+                ? context.appColors.primary
+                : context.appColors.onSurface,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
           ),
         ),
         onTap: onTap,

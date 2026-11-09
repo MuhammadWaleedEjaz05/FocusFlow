@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/Models/task_model.dart';
 import 'package:frontend/Providers/push_notifications_provider.dart';
@@ -50,7 +51,7 @@ class TaskController {
             scheduledDate: task.dueDate,
           );
     } catch (e) {
-      print('Error scheduling notification: $e');
+      debugPrint('Error scheduling notification: $e');
     }
     ref.invalidate(tasksListProvider(task.userEmail));
   }
@@ -67,7 +68,7 @@ class TaskController {
             scheduledDate: task.dueDate,
           );
     } catch (e) {
-      print('Error scheduling notification: $e');
+      debugPrint('Error scheduling notification: $e');
     }
     ref.invalidate(tasksListProvider(task.userEmail));
   }
@@ -79,7 +80,7 @@ class TaskController {
           .read(pushNotificationServiceProvider)
           .cancelNotification(task.uniqueId.hashCode);
     } catch (e) {
-      print('Error cancelling notification: $e');
+      debugPrint('Error cancelling notification: $e');
     }
     ref.invalidate(tasksListProvider(task.userEmail));
   }
@@ -92,7 +93,7 @@ class TaskController {
           .watch(taskServiceProvider)
           .addToGoogleCalendar(task, token, authz.accessToken);
     } catch (e) {
-      print("Google Auth error: $e");
+      debugPrint("Google Auth error: $e");
     }
   }
 }

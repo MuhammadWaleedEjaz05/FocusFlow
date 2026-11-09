@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/Providers/push_notifications_provider.dart';
@@ -28,14 +29,14 @@ Future<void> initializeNotifications() async {
       onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
     );
   } catch (e) {
-    print('Error initializing notifications: $e');
+    debugPrint('Error initializing notifications: $e');
   }
 }
 
 void _onDidReceiveNotificationResponse(
   NotificationResponse notificationResponse,
 ) {
-  print('Notification tapped: ${notificationResponse.payload}');
+  debugPrint('Notification tapped: ${notificationResponse.payload}');
 }
 
 class PushNotificationService {
@@ -62,7 +63,7 @@ class PushNotificationService {
       try {
         final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
         if (tzScheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
-          print('Skipping notification for past date: $scheduledDate');
+          debugPrint('Skipping notification for past date: $scheduledDate');
           return;
         }
         final AndroidNotificationDetails androidPlatformChannelSpecifics;
@@ -109,7 +110,7 @@ class PushNotificationService {
           payload: payload,
         );
       } catch (e) {
-        print('Error scheduling notification: $e');
+        debugPrint('Error scheduling notification: $e');
         rethrow;
       }
     }
@@ -119,7 +120,7 @@ class PushNotificationService {
     try {
       await _plugin.cancel(id);
     } catch (e) {
-      print('Error cancelling notification: $e');
+      debugPrint('Error cancelling notification: $e');
     }
   }
 
@@ -127,7 +128,7 @@ class PushNotificationService {
     try {
       await _plugin.cancelAll();
     } catch (e) {
-      print('Error cancelling all notifications: $e');
+      debugPrint('Error cancelling all notifications: $e');
     }
   }
 }

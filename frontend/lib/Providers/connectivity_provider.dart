@@ -27,7 +27,9 @@ final connectivityListenerProvider = Provider<void>((ref) {
           try {
             final localDBController = await ref.read(localDBProvider.future);
             await localDBController.syncFavourites();
-          } catch (e) {}
+          } catch (_) {
+            // Ignore background sync errors
+          }
           final prefs = await ref.read(prefProvider.future);
           final userEmail = prefs.getString('userEmail') ?? '';
           ref.invalidate(tasksListProvider(userEmail));

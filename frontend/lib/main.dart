@@ -11,6 +11,7 @@ import 'package:frontend/Services/localdb_service.dart';
 import 'package:frontend/Services/push_notification_service.dart';
 import 'package:frontend/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
@@ -58,8 +59,21 @@ class MyApp extends ConsumerWidget {
     final isDark = ref.watch(isDarkModeProvider);
     final schemeIndex = ref.watch(colorSchemeIndexProvider);
 
+    ThemeData buildLocalizedTheme(ThemeData baseTheme) {
+      final TextTheme localizedTextTheme;
+      if (lang == 'ar') {
+        localizedTextTheme = GoogleFonts.cairoTextTheme(baseTheme.textTheme);
+      } else if (lang == 'ur') {
+        localizedTextTheme =
+            GoogleFonts.notoNastaliqUrduTextTheme(baseTheme.textTheme);
+      } else {
+        localizedTextTheme = GoogleFonts.interTextTheme(baseTheme.textTheme);
+      }
+      return baseTheme.copyWith(textTheme: localizedTextTheme);
+    }
+
     return ScreenUtilInit(
-      designSize: const Size(447, 875),
+      designSize: const Size(390, 844),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) => MaterialApp(
@@ -68,8 +82,8 @@ class MyApp extends ConsumerWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,
         title: 'FocusFlow',
-        theme: lightTheme[schemeIndex],
-        darkTheme: darkTheme[schemeIndex],
+        theme: buildLocalizedTheme(lightTheme[schemeIndex]),
+        darkTheme: buildLocalizedTheme(darkTheme[schemeIndex]),
         themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
         home: const SplashScreen(),
       ),

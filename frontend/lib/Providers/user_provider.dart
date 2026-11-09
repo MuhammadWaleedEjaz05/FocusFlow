@@ -152,12 +152,16 @@ class UserController {
       if (email != null) {
         await userService.logoutUser(email);
       }
-    } catch (e) {}
+    } catch (_) {
+      // Ignore network errors on logout
+    }
 
     try {
       final localDBService = ref.watch(localDBServiceProvider);
       await localDBService.clearDB();
-    } catch (e) {}
+    } catch (_) {
+      // Ignore database clear errors on logout
+    }
 
     await prefs.clear();
     ref.read(isLoggedInProvider.notifier).state = false;

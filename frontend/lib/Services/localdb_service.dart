@@ -60,7 +60,9 @@ Future<void> localDBInitialize() async {
           await task.save();
         }
       }
-    } catch (e) {}
+    } catch (_) {
+      // Ignore initial favourite sync errors
+    }
   }
 }
 
@@ -100,7 +102,9 @@ class LocaldbService {
               (controller) =>
                   controller.updateTask(task.copyWith(isFavorite: true)),
             );
-      } catch (e) {}
+      } catch (_) {
+      // Ignore initial favourite sync errors
+    }
     }
   }
 
@@ -116,7 +120,9 @@ class LocaldbService {
               (controller) =>
                   controller.updateTask(task.copyWith(isFavorite: false)),
             );
-      } catch (e) {}
+      } catch (_) {
+      // Ignore initial favourite sync errors
+    }
     }
   }
 
@@ -169,7 +175,9 @@ class LocaldbService {
           await ref
               .read(taskProvider.future)
               .then((controller) => controller.deleteTask(taskToDelete));
-        } catch (e) {}
+        } catch (_) {
+      // Ignore initial favourite sync errors
+    }
       }
     }
     await pendingDeletionsBox.clear();
@@ -208,7 +216,9 @@ class LocaldbService {
 
           localTask.isPendingSync = false;
           await localTask.save();
-        } catch (e) {}
+        } catch (_) {
+      // Ignore initial favourite sync errors
+    }
       } else {
         localTask.isPendingSync = false;
         await localTask.save();
@@ -234,7 +244,9 @@ class LocaldbService {
                   serverTask.copyWith(isFavorite: true),
                 ),
               );
-        } catch (e) {}
+        } catch (_) {
+      // Ignore initial favourite sync errors
+    }
       }
     }
   }

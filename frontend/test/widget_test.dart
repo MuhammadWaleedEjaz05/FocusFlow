@@ -13,7 +13,8 @@ void main() {
   testWidgets('MyApp builds successfully with ProviderScope', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(ProviderScope(child: const MyApp()));
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    await tester.pump(const Duration(milliseconds: 50));
 
     // Verify the app renders without errors
     expect(find.byType(MyApp), findsOneWidget);
