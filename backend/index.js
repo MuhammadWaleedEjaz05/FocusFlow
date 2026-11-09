@@ -23,6 +23,6 @@ connectDatabase();
 app.use('/MyTasks/tasks', require('./Routes/task_route'));
 app.use('/MyTasks/users', require('./Routes/user_route'));
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });
